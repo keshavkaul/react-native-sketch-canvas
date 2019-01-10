@@ -30,9 +30,10 @@
 @property (nonatomic) UIColor* borderStrokeColor;
 @property (nonatomic) CGFloat entityStrokeWidth;
 @property (nonatomic) UIColor* entityStrokeColor;
+@property (nonatomic) NSString* entityId;
 
-
-- (instancetype)initAndSetupWithParent: (NSInteger)parentWidth
+- (instancetype)initAndSetupWithParent: (NSString *)entityId
+                           parentWidth: (NSInteger)parentWidth
                           parentHeight: (NSInteger)parentHeight
                          parentCenterX: (CGFloat)parentCenterX
                          parentCenterY: (CGFloat)parentCenterY

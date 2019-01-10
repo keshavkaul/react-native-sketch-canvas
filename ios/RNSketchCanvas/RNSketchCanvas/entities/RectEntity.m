@@ -14,7 +14,8 @@
 {
 }
 
-- (instancetype)initAndSetupWithParent: (NSInteger)parentWidth
+- (instancetype)initAndSetupWithParent: (NSString *)entityId
+                           parentWidth: (NSInteger)parentWidth
                           parentHeight: (NSInteger)parentHeight
                          parentCenterX: (CGFloat)parentCenterX
                          parentCenterY: (CGFloat)parentCenterY
@@ -33,7 +34,8 @@
     CGFloat realWidth = width / 2;
     CGFloat realHeight = height / 2;
     
-    self = [super initAndSetupWithParent:parentWidth
+    self = [super initAndSetupWithParent:entityId
+                             parentWidth:parentWidth
                             parentHeight:parentHeight
                            parentCenterX:realParentCenterX
                            parentCenterY:realParentCenterY

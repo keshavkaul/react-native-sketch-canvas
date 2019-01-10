@@ -27,6 +27,7 @@ RCT_EXPORT_MODULE()
 #pragma mark - Events
 
 RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock);
+RCT_EXPORT_VIEW_PROPERTY(onShapeConfigChange, RCTBubblingEventBlock);
 
 #pragma mark - Props
 RCT_CUSTOM_VIEW_PROPERTY(shapeConfiguration, NSDictionary, RNSketchCanvas)
@@ -137,10 +138,10 @@ RCT_EXPORT_METHOD(deleteSelectedShape:(nonnull NSNumber *)reactTag)
     }];
 }
 
-RCT_EXPORT_METHOD(addShape:(nonnull NSNumber *)reactTag shapeType:(NSString *) shapeType textShapeFontType:(NSString *) textShapeFontType textShapeFontSize:(nonnull NSNumber *) textShapeFontSize textShapeText:(NSString *) textShapeText imageShapeAsset:(NSString *)imageShapeAsset)
+RCT_EXPORT_METHOD(addShape:(nonnull NSNumber *)reactTag shapeId:(NSString *) shapeId shapeType:(NSString *) shapeType textShapeFontType:(NSString *) textShapeFontType textShapeFontSize:(nonnull NSNumber *) textShapeFontSize textShapeText:(NSString *) textShapeText imageShapeAsset:(NSString *)imageShapeAsset)
 {
     [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
-        [canvas addEntity:shapeType textShapeFontType:textShapeFontType textShapeFontSize:textShapeFontSize textShapeText:textShapeText imageShapeAsset:imageShapeAsset];
+        [canvas addEntity:shapeId shapeType:(NSString *) shapeType textShapeFontType:textShapeFontType textShapeFontSize:textShapeFontSize textShapeText:textShapeText imageShapeAsset:imageShapeAsset];
     }];
 }
 
@@ -162,6 +163,55 @@ RCT_EXPORT_METHOD(changeShapeText:(nonnull NSNumber *)reactTag newText:(NSString
 {
     [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
         [canvas setTextEntityText:newText];
+    }];
+}
+
+RCT_EXPORT_METHOD(selectShapeById:(nonnull NSNumber *)reactTag shapeId:(NSString *) shapeId)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas selectShapeById:shapeId];
+    }];
+}
+
+RCT_EXPORT_METHOD(moveSelectedShape:(nonnull NSNumber *)reactTag actionObject:(NSDictionary *) actionObject)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas moveSelectedShape: actionObject];
+    }];
+}
+
+RCT_EXPORT_METHOD(scaleSelectedShape:(nonnull NSNumber *)reactTag actionObject:(NSDictionary *) actionObject)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas scaleSelectedShape: actionObject];
+    }];
+}
+
+RCT_EXPORT_METHOD(rotateSelectedShape:(nonnull NSNumber *)reactTag actionObject:(NSDictionary *) actionObject)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas rotateSelectedShape: actionObject];
+    }];
+}
+
+RCT_EXPORT_METHOD(moveShapeById:(nonnull NSNumber *)reactTag shapeId:(NSString *) shapeId actionObject:(NSDictionary *) actionObject)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas moveShapeById:shapeId actionObject: actionObject];
+    }];
+}
+
+RCT_EXPORT_METHOD(scaleShapeById:(nonnull NSNumber *)reactTag shapeId:(NSString *) shapeId actionObject:(NSDictionary *) actionObject)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas scaleShapeById:shapeId actionObject: actionObject];
+    }];
+}
+
+RCT_EXPORT_METHOD(rotateShapeById:(nonnull NSNumber *)reactTag shapeId:(NSString *) shapeId actionObject:(NSDictionary *) actionObject)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas rotateShapeById:shapeId actionObject: actionObject];
     }];
 }
 

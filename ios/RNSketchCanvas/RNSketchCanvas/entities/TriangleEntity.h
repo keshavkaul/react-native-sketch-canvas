@@ -10,7 +10,8 @@
 
 @interface TriangleEntity : MotionEntity
 
-- (instancetype)initAndSetupWithParent: (NSInteger)parentWidth
+- (instancetype)initAndSetupWithParent: (NSString *)entityId
+                           parentWidth: (NSInteger)parentWidth
                           parentHeight: (NSInteger)parentHeight
                          parentCenterX: (CGFloat)parentCenterX
                          parentCenterY: (CGFloat)parentCenterY

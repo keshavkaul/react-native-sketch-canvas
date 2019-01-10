@@ -7,6 +7,7 @@
 @interface RNSketchCanvas : UIView <UIGestureRecognizerDelegate>
 
 @property (nonatomic, copy) RCTBubblingEventBlock onChange;
+@property (nonatomic, copy) RCTBubblingEventBlock onShapeConfigChange;
 @property (nonatomic) NSMutableArray<MotionEntity *> *motionEntities;
 @property (nonatomic) MotionEntity *selectedEntity;
 @property (nonatomic) UIColor *entityBorderColor;
@@ -32,11 +33,21 @@
 - (void)saveImageOfType:(NSString*) type folder:(NSString*) folder filename:(NSString*) filename withTransparentBackground:(BOOL) transparent includeImage:(BOOL)includeImage includeText:(BOOL)includeText cropToImageSize:(BOOL)cropToImageSize;
 - (NSString*) transferToBase64OfType: (NSString*) type withTransparentBackground: (BOOL) transparent includeImage:(BOOL)includeImage includeText:(BOOL)includeText cropToImageSize:(BOOL)cropToImageSize;
 - (void)setShapeConfiguration:(NSDictionary *)dict;
-- (void)addEntity:(NSString *)entityType textShapeFontType: (NSString *)textShapeFontType textShapeFontSize: (NSNumber *)textShapeFontSize textShapeText: (NSString *)textShapeText imageShapeAsset: (NSString *)imageShapeAsset;
+- (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType: (NSString *)textShapeFontType textShapeFontSize: (NSNumber *)textShapeFontSize textShapeText: (NSString *)textShapeText imageShapeAsset: (NSString *)imageShapeAsset;
 - (void)releaseSelectedEntity;
 - (void)increaseTextEntityFontSize;
 - (void)decreaseTextEntityFontSize;
 - (void)setTextEntityText:(NSString *)newText;
+- (NSDictionary *)getEntityConfig: (MotionEntity *)entityObject;
+- (void)onSelectedShapeConfigChange: (NSString *)changeType actionObject:(NSDictionary *)actionObject;
+- (void)selectShapeById: (NSString *)shapeId;
+- (void)moveSelectedShape: (NSDictionary *)actionObject;
+- (void)scaleSelectedShape: (NSDictionary *)actionObject;
+- (void)rotateSelectedShape: (NSDictionary *)actionObject;
+- (void)moveShapeById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject;
+- (void)scaleShapeById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject;
+- (void)rotateShapeById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject;
+- (MotionEntity *) getShapeById: (NSString *)shapeId;
 @end
 
 
