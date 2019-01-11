@@ -404,7 +404,7 @@ class SketchCanvas extends React.Component {
                     } else if (e.nativeEvent.hasOwnProperty("success")) {
                         this.props.onSketchSaved(e.nativeEvent.success);
                     } else if (e.nativeEvent.hasOwnProperty("selectedShape")) {
-                        this.props.onShapeSelectionChanged(e.nativeEvent.selectedShape);
+                        this.props.onShapeSelectionChanged(e.nativeEvent);
                     }
                 }}
                 onShapeAdded={(e) => {
