@@ -615,7 +615,7 @@
         [self onShapeSelectionChanged:newEntity];
         [self selectEntity:newEntity];
         if(_onShapeAdded) {
-            _onShapeAdded(@{ @"shapeDetails": [self getEntityConfig:newEntity, @"ShapeType": shapeType });
+            _onShapeAdded(@{ @"shapeDetails": [self getEntityConfig:newEntity], @"ShapeType": shapeType });
         }
     }
 }
