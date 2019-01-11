@@ -28,6 +28,8 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onShapeConfigChange, RCTBubblingEventBlock);
+RCT_EXPORT_VIEW_PROPERTY(onShapeAdded, RCTBubblingEventBlock);
+RCT_EXPORT_VIEW_PROPERTY(onShapeTransformationEnded, RCTBubblingEventBlock);
 
 #pragma mark - Props
 RCT_CUSTOM_VIEW_PROPERTY(shapeConfiguration, NSDictionary, RNSketchCanvas)
@@ -135,6 +137,13 @@ RCT_EXPORT_METHOD(deleteSelectedShape:(nonnull NSNumber *)reactTag)
 {
     [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
         [canvas releaseSelectedEntity];
+    }];
+}
+
+RCT_EXPORT_METHOD(deleteAllShapes:(nonnull NSNumber *)reactTag)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas deleteAllEntities];
     }];
 }
 

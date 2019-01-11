@@ -7,7 +7,10 @@
 @interface RNSketchCanvas : UIView <UIGestureRecognizerDelegate>
 
 @property (nonatomic, copy) RCTBubblingEventBlock onChange;
+@property (nonatomic, copy) RCTBubblingEventBlock onShapeAdded;
 @property (nonatomic, copy) RCTBubblingEventBlock onShapeConfigChange;
+@property (nonatomic, copy) RCTBubblingEventBlock onShapeTransformationEnded;
+
 @property (nonatomic) NSMutableArray<MotionEntity *> *motionEntities;
 @property (nonatomic) MotionEntity *selectedEntity;
 @property (nonatomic) UIColor *entityBorderColor;
@@ -35,6 +38,7 @@
 - (void)setShapeConfiguration:(NSDictionary *)dict;
 - (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType: (NSString *)textShapeFontType textShapeFontSize: (NSNumber *)textShapeFontSize textShapeText: (NSString *)textShapeText imageShapeAsset: (NSString *)imageShapeAsset;
 - (void)releaseSelectedEntity;
+- (void) deleteAllEntities;
 - (void)increaseTextEntityFontSize;
 - (void)decreaseTextEntityFontSize;
 - (void)setTextEntityText:(NSString *)newText;

@@ -164,6 +164,10 @@ export default class RNSketchCanvas extends React.Component {
         this._sketchCanvas.deleteSelectedShape();
     }
 
+    deleteAllShapes() {
+        this._sketchCanvas.deleteAllShapes();
+    }
+
     addShape(config) {
         this._sketchCanvas.addShape(config);
     }

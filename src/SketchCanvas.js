@@ -33,8 +33,10 @@ class SketchCanvas extends React.Component {
         onStrokeChanged: PropTypes.func,
         onStrokeEnd: PropTypes.func,
         onSketchSaved: PropTypes.func,
+        onShapeAdded: PropTypes.func,
         onShapeSelectionChanged: PropTypes.func,
         onShapeConfigChange: PropTypes.func,
+        onShapeTransformationEnded: PropTypes.func,
         shapeConfiguration: PropTypes.shape({
             shapeBorderColor: PropTypes.string,
             shapeBorderStyle: PropTypes.string,
@@ -80,8 +82,10 @@ class SketchCanvas extends React.Component {
         onStrokeChanged: () => {},
         onStrokeEnd: () => {},
         onSketchSaved: () => {},
+        onShapeAdded: () => {},
         onShapeSelectionChanged: () => {},
         onShapeConfigChange: () => {},
+        onShapeTransformationEnded: () => {},
         shapeConfiguration: {
             shapeBorderColor: "transparent",
             shapeBorderStyle: "Dashed",
@@ -246,6 +250,10 @@ class SketchCanvas extends React.Component {
         UIManager.dispatchViewManagerCommand(this._handle, UIManager.RNSketchCanvas.Commands.deleteSelectedShape, []);
     }
 
+    deleteAllShapes() {
+        UIManager.dispatchViewManagerCommand(this._handle, UIManager.RNSketchCanvas.Commands.deleteAllShapes, []);
+    }
+
     increaseSelectedShapeFontsize() {
         UIManager.dispatchViewManagerCommand(this._handle, UIManager.RNSketchCanvas.Commands.increaseShapeFontsize, []);
     }
@@ -395,13 +403,18 @@ class SketchCanvas extends React.Component {
                         this.props.onSketchSaved(e.nativeEvent.success, e.nativeEvent.path);
                     } else if (e.nativeEvent.hasOwnProperty("success")) {
                         this.props.onSketchSaved(e.nativeEvent.success);
-                    } else if (e.nativeEvent.hasOwnProperty("isShapeSelected")) {
-                        this.props.onShapeSelectionChanged(e.nativeEvent);
+                    } else if (e.nativeEvent.hasOwnProperty("selectedShape")) {
+                        this.props.onShapeSelectionChanged(e.nativeEvent.selectedShape);
                     }
+                }}
+                onShapeAdded={(e) => {
+                    this.props.onShapeAdded(e.nativeEvent);
                 }}
                 onShapeConfigChange={(e) => {
                     this.props.onShapeConfigChange(e.nativeEvent);
-                    console.log("onShapeConfig Change :::", e.nativeEvent);
+                }}
+                onShapeTransformationEnded={(e) => {
+                    this.props.onShapeTransformationEnded(e.nativeEvent);
                 }}
                 localSourceImage={this.props.localSourceImage}
                 permissionDialogTitle={this.props.permissionDialogTitle}
