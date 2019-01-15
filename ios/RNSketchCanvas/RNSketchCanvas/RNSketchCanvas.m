@@ -582,7 +582,7 @@
     }
 }
 
-- (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType:(NSString *)textShapeFontType textShapeFontSize:(NSNumber *)textShapeFontSize textShapeText:(NSString *)textShapeText imageShapeAsset:(NSString *)imageShapeAsset {
+- (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType:(NSString *)textShapeFontType textShapeFontSize:(NSNumber *)textShapeFontSize textShapeText:(NSString *)textShapeText imageShapeAsset:(NSString *)imageShapeAsset shouldSelectEntity: (Boolean)shouldSelectEntity{
     
     MotionEntity *newEntity = nil;
     switch ([@[@"Circle", @"Rect", @"Square", @"Triangle", @"Arrow", @"Text", @"Image"] indexOfObject: shapeType]) {
@@ -612,10 +612,12 @@
     }
     if(newEntity){
         [self.motionEntities addObject: newEntity];
-        [self onShapeSelectionChanged:newEntity];
-        [self selectEntity:newEntity];
+        if (shouldSelectEntity) {
+            [self onShapeSelectionChanged:newEntity];
+            [self selectEntity:newEntity];
+        }
         if(_onShapeAdded) {
-            _onShapeAdded(@{ @"shapeDetails": [Utility getEntityConfig:newEntity], @"ShapeType": shapeType });
+            _onShapeAdded(@{ @"shapeDetails": [Utility getEntityConfig:newEntity], @"shapeType": shapeType });
         }
     }
 }

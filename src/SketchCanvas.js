@@ -178,13 +178,15 @@ class SketchCanvas extends React.Component {
         if (config) {
             let fontSize = config.textShapeFontSize ? config.textShapeFontSize : 0;
             let shapeId = config.id ? config.id : uuid();
+            const shouldSelectEntity = config.shouldSelectEntity || true;
             UIManager.dispatchViewManagerCommand(this._handle, UIManager.RNSketchCanvas.Commands.addShape, [
                 shapeId,
                 config.shapeType,
                 config.textShapeFontType,
                 fontSize,
                 config.textShapeText,
-                config.imageShapeAsset
+                config.imageShapeAsset,
+                shouldSelectEntity
             ]);
         }
     }
