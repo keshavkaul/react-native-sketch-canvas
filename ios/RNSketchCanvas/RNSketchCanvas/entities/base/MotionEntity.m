@@ -45,6 +45,7 @@
         self.entityStrokeWidth = entityStrokeWidth;
         self.entityStrokeColor = entityStrokeColor;
         self.entityId = entityId;
+        self.rotation = 0;
         
         self.backgroundColor = [UIColor clearColor];
     }
@@ -65,6 +66,10 @@
 
 - (void)rotateEntityBy:(CGFloat)rotationInRadians {
     [self setTransform:CGAffineTransformRotate(self.transform, rotationInRadians)];
+    self.rotation = self.rotation + rotationInRadians;
+    if(self.rotation > 6.28319){
+        self.rotation = self.rotation - 6.28319;
+    }
 }
 
 - (void)moveEntityTo:(CGPoint)locationDiff {

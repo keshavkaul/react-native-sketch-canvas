@@ -42,7 +42,6 @@
 - (void)increaseTextEntityFontSize;
 - (void)decreaseTextEntityFontSize;
 - (void)setTextEntityText:(NSString *)newText;
-- (NSDictionary *)getEntityConfig: (MotionEntity *)entityObject;
 - (void)onSelectedShapeConfigChange: (NSString *)changeType actionObject:(NSDictionary *)actionObject;
 - (void)selectShapeById: (NSString *)shapeId;
 - (void)moveSelectedShape: (NSDictionary *)actionObject;

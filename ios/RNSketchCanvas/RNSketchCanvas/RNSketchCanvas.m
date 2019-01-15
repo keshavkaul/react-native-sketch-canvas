@@ -615,7 +615,7 @@
         [self onShapeSelectionChanged:newEntity];
         [self selectEntity:newEntity];
         if(_onShapeAdded) {
-            _onShapeAdded(@{ @"shapeDetails": [self getEntityConfig:newEntity], @"ShapeType": shapeType });
+            _onShapeAdded(@{ @"shapeDetails": [Utility getEntityConfig:newEntity], @"ShapeType": shapeType });
         }
     }
 }
@@ -838,7 +838,7 @@
     }
     else if (state == UIGestureRecognizerStateEnded) {
         if (self.selectedEntity) {
-            [self onShapeTransformationEnded: @"rotate" actionObject: @{@"value": [self getEntityConfig:self.selectedEntity]}];
+            [self onShapeTransformationEnded: @"rotate" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity]}];
         }
     }
 }
@@ -854,7 +854,7 @@
             [sender setTranslation:CGPointZero inView:sender.view];
             [self setNeedsDisplayInRect:self.selectedEntity.bounds];
             if (state == UIGestureRecognizerStateEnded) {
-                    [self onShapeTransformationEnded: @"move" actionObject: @{@"value": [self getEntityConfig:self.selectedEntity]}];
+                    [self onShapeTransformationEnded: @"move" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity]}];
             }
         }
     }
@@ -871,7 +871,7 @@
         [sender setScale:1.0];
     } else if (state == UIGestureRecognizerStateEnded) {
         if (self.selectedEntity) {
-            [self onShapeTransformationEnded: @"scale" actionObject: @{@"value": [self getEntityConfig:self.selectedEntity]}];
+            [self onShapeTransformationEnded: @"scale" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity]}];
         }
     }
 }
@@ -892,7 +892,7 @@
 - (void)onShapeSelectionChanged:(MotionEntity *)nextEntity {
     if (_onChange) {
         if (nextEntity) {
-            _onChange(@{ @"selectedShape": [self getEntityConfig:nextEntity ] });
+            _onChange(@{ @"selectedShape": [Utility getEntityConfig:nextEntity ] });
         } else {
             // Add delay!
             _onChange(@{ @"selectedShape": @{} });
@@ -938,20 +938,6 @@
             _onShapeConfigChange(@{ @"transform": @"none"});
             break;
     }
-}
-
-- (NSDictionary *)getEntityConfig: (MotionEntity *)entityObject {
-    return  @{
-              @"shapeId": entityObject.entityId,
-              @"scale": [NSNumber numberWithFloat:(entityObject.scale) ],
-              @"positon": entityObject,
-              @"strokeColor": entityObject.entityStrokeColor,
-              @"borderStrokeColor": entityObject.borderStrokeColor,
-              @"strokeWidth": [NSNumber numberWithFloat:(entityObject.entityStrokeWidth)],
-              @"borderStrokeWidth": [NSNumber numberWithFloat:(entityObject.borderStrokeWidth)],
-              @"centerPoint": @{@"x": [NSNumber numberWithFloat:entityObject.centerPoint.x],
-                                @"y": [NSNumber numberWithFloat:entityObject.centerPoint.y] },
-              };
 }
 
 - (void)selectShapeById: (NSString *)shapeId {

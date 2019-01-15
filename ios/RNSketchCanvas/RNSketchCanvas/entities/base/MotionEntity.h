@@ -31,6 +31,7 @@
 @property (nonatomic) CGFloat entityStrokeWidth;
 @property (nonatomic) UIColor* entityStrokeColor;
 @property (nonatomic) NSString* entityId;
+@property (nonatomic) CGFloat rotation;
 
 - (instancetype)initAndSetupWithParent: (NSString *)entityId
                            parentWidth: (NSInteger)parentWidth
