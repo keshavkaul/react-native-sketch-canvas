@@ -23,6 +23,8 @@
 @property (nonatomic) UIPanGestureRecognizer *moveGesture;
 @property (nonatomic) UIPinchGestureRecognizer *scaleGesture;
 
+@property (nonatomic) CGFloat rotationChange;
+
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher;
 
 - (BOOL)openSketchFile:(NSString *)filename directory:(NSString*) directory contentMode:(NSString*)mode;
@@ -48,6 +50,7 @@
 - (void)scaleSelectedShape: (NSDictionary *)actionObject;
 - (void)rotateSelectedShape: (NSDictionary *)actionObject;
 - (void)moveShapeById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject;
+- (void)moveShapeToFrameById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject;
 - (void)scaleShapeById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject;
 - (void)rotateShapeById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject;
 - (MotionEntity *) getShapeById: (NSString *)shapeId;

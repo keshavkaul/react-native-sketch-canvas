@@ -77,6 +77,11 @@
     self.centerPoint = self.center;
 }
 
+- (void)moveEntityToFrame:(CGRect)newFrame {
+    self.frame = newFrame;
+    self.centerPoint = self.center;
+}
+
 - (void)scaleEntityBy:(CGFloat)newScale {
     CGFloat absoluteScale = self.scale * newScale;
     if (absoluteScale >= self.MIN_SCALE && absoluteScale <= self.MAX_SCALE) {

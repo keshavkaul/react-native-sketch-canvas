@@ -66,6 +66,8 @@
         self.scaleGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleScale:)];
         self.scaleGesture.delegate = self;
         
+        self.rotationChange = 0;
+        
         [self addGestureRecognizer:self.tapGesture];
         [self addGestureRecognizer:self.rotateGesture];
         [self addGestureRecognizer:self.moveGesture];
@@ -830,19 +832,28 @@
 
 - (void)handleRotate:(UIRotationGestureRecognizer *)sender {
     UIGestureRecognizerState state = [sender state];
-    if (state == UIGestureRecognizerStateBegan || state == UIGestureRecognizerStateChanged) {
-        if (self.selectedEntity) {
-            [self.selectedEntity rotateEntityBy:sender.rotation];
-            [self setNeedsDisplayInRect:self.selectedEntity.bounds];
-        }
-        [self onSelectedShapeConfigChange:@"rotate" actionObject: @{ @"value": [NSNumber numberWithFloat:sender.rotation] }];
-        [sender setRotation:0.0];
+    
+    switch (state) {
+        case UIGestureRecognizerStateBegan:
+            _rotationChange = 0;
+        case UIGestureRecognizerStateChanged:
+            if (self.selectedEntity) {
+                [self.selectedEntity rotateEntityBy:sender.rotation];
+                [self setNeedsDisplayInRect:self.selectedEntity.bounds];
+            }
+            [self onSelectedShapeConfigChange:@"rotate" actionObject: @{ @"value": [NSNumber numberWithFloat:sender.rotation] }];
+             _rotationChange = _rotationChange + sender.rotation;
+            [sender setRotation:0.0];
+            break;
+        case UIGestureRecognizerStateEnded:
+            if (self.selectedEntity) {
+                [self onShapeTransformationEnded: @"rotate" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity], @"rotationChange": [NSNumber numberWithFloat:_rotationChange]}];
+            }
+            break;
+        default:
+            break;
     }
-    else if (state == UIGestureRecognizerStateEnded) {
-        if (self.selectedEntity) {
-            [self onShapeTransformationEnded: @"rotate" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity]}];
-        }
-    }
+   
 }
 
 - (void)handleMove:(UIPanGestureRecognizer *)sender {
@@ -986,6 +997,18 @@
         CGFloat newValueY = [[actionObject valueForKeyPath:@"value.y"] floatValue];
         CGPoint newPoint = CGPointMake(newValueX, newValueY);
         [transformedEntity moveEntityTo: newPoint];
+        [self setNeedsDisplayInRect:transformedEntity.bounds];
+    }
+}
+
+- (void)moveShapeToFrameById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject {
+    MotionEntity *transformedEntity = [self getShapeById:shapeId];
+    if(transformedEntity) {
+        CGFloat newValueX = [[actionObject valueForKeyPath:@"value.origin.x"] floatValue];
+        CGFloat newValueY = [[actionObject valueForKeyPath:@"value.origin.y"] floatValue];
+        CGFloat newValueWidth = [[actionObject valueForKeyPath:@"value.size.width"] floatValue];
+        CGFloat newValueHeight = [[actionObject valueForKeyPath:@"value.size.height"] floatValue];
+        [transformedEntity moveEntityToFrame:CGRectMake( newValueX, newValueY, newValueWidth, newValueHeight)];
         [self setNeedsDisplayInRect:transformedEntity.bounds];
     }
 }

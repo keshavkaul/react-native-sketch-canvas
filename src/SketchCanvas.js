@@ -230,6 +230,15 @@ class SketchCanvas extends React.Component {
         }
     }
 
+    moveShapeToFrameById(id, value) {
+        if (id && value) {
+            UIManager.dispatchViewManagerCommand(this._handle, UIManager.RNSketchCanvas.Commands.moveShapeToFrameById, [
+                id,
+                { value }
+            ]);
+        }
+    }
+
     scaleShapeById(id, value) {
         if (id && value) {
             UIManager.dispatchViewManagerCommand(this._handle, UIManager.RNSketchCanvas.Commands.scaleShapeById, [

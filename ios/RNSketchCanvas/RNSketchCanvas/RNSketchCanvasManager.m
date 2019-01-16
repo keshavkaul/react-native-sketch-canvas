@@ -210,6 +210,13 @@ RCT_EXPORT_METHOD(moveShapeById:(nonnull NSNumber *)reactTag shapeId:(NSString *
     }];
 }
 
+RCT_EXPORT_METHOD(moveShapeToFrameById:(nonnull NSNumber *)reactTag shapeId:(NSString *) shapeId actionObject:(NSDictionary *) actionObject)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas moveShapeToFrameById:shapeId actionObject: actionObject];
+    }];
+}
+
 RCT_EXPORT_METHOD(scaleShapeById:(nonnull NSNumber *)reactTag shapeId:(NSString *) shapeId actionObject:(NSDictionary *) actionObject)
 {
     [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
