@@ -36,13 +36,12 @@
 - (void)saveImageOfType:(NSString*) type folder:(NSString*) folder filename:(NSString*) filename withTransparentBackground:(BOOL) transparent includeImage:(BOOL)includeImage includeText:(BOOL)includeText cropToImageSize:(BOOL)cropToImageSize;
 - (NSString*) transferToBase64OfType: (NSString*) type withTransparentBackground: (BOOL) transparent includeImage:(BOOL)includeImage includeText:(BOOL)includeText cropToImageSize:(BOOL)cropToImageSize;
 - (void)setShapeConfiguration:(NSDictionary *)dict;
-- (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType: (NSString *)textShapeFontType textShapeFontSize: (NSNumber *)textShapeFontSize textShapeText: (NSString *)textShapeText imageShapeAsset: (NSString *)imageShapeAsset;
+- (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType: (NSString *)textShapeFontType textShapeFontSize: (NSNumber *)textShapeFontSize textShapeText: (NSString *)textShapeText imageShapeAsset: (NSString *)imageShapeAsset shouldSelectEntity: (BOOL)shouldSelectEntity;
 - (void)releaseSelectedEntity;
 - (void) deleteAllEntities;
 - (void)increaseTextEntityFontSize;
 - (void)decreaseTextEntityFontSize;
 - (void)setTextEntityText:(NSString *)newText;
-- (NSDictionary *)getEntityConfig: (MotionEntity *)entityObject;
 - (void)onSelectedShapeConfigChange: (NSString *)changeType actionObject:(NSDictionary *)actionObject;
 - (void)selectShapeById: (NSString *)shapeId;
 - (void)moveSelectedShape: (NSDictionary *)actionObject;

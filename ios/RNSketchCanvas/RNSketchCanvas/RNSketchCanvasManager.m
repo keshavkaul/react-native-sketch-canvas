@@ -147,10 +147,10 @@ RCT_EXPORT_METHOD(deleteAllShapes:(nonnull NSNumber *)reactTag)
     }];
 }
 
-RCT_EXPORT_METHOD(addShape:(nonnull NSNumber *)reactTag shapeId:(NSString *) shapeId shapeType:(NSString *) shapeType textShapeFontType:(NSString *) textShapeFontType textShapeFontSize:(nonnull NSNumber *) textShapeFontSize textShapeText:(NSString *) textShapeText imageShapeAsset:(NSString *)imageShapeAsset)
+RCT_EXPORT_METHOD(addShape:(nonnull NSNumber *)reactTag shapeId:(NSString *) shapeId shapeType:(NSString *) shapeType textShapeFontType:(NSString *) textShapeFontType textShapeFontSize:(nonnull NSNumber *) textShapeFontSize textShapeText:(NSString *) textShapeText imageShapeAsset:(NSString *)imageShapeAsset shouldSelectEntity: (BOOL) shouldSelectEntity)
 {
     [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
-        [canvas addEntity:shapeId shapeType:(NSString *) shapeType textShapeFontType:textShapeFontType textShapeFontSize:textShapeFontSize textShapeText:textShapeText imageShapeAsset:imageShapeAsset];
+        [canvas addEntity:shapeId shapeType:(NSString *) shapeType textShapeFontType:textShapeFontType textShapeFontSize:textShapeFontSize textShapeText:textShapeText imageShapeAsset:imageShapeAsset shouldSelectEntity: shouldSelectEntity];
     }];
 }
 
