@@ -24,6 +24,7 @@
     CGContextRef _drawingContext, _translucentDrawingContext;
     CGImageRef _frozenImage, _translucentFrozenImage;
     BOOL _needsFullRedraw;
+    BOOL _needClear;
 
     UIImage *_backgroundImage;
     UIImage *_backgroundImageScaled;
@@ -360,6 +361,7 @@
 - (void) clear {
     [_paths removeAllObjects];
     _currentPath = nil;
+    [self deleteAllEntities];
     _needsFullRedraw = YES;
     [self setNeedsDisplay];
     [self notifyPathsUpdate];
@@ -786,8 +788,32 @@
     }
 }
 
+- (void)deleteEntityById:(NSString *)shapeId {
+    MotionEntity *entityToRemove = nil;
+    for (MotionEntity *entity in self.motionEntities) {
+        if (entity.entityId == shapeId) {
+            entityToRemove = entity;
+            break;
+        }
+    }
+    if (entityToRemove) {
+        [self.motionEntities removeObject:entityToRemove];
+        [entityToRemove removeFromSuperview];
+        entityToRemove = nil;
+        [self selectEntity:entityToRemove];
+        [self onShapeSelectionChanged:nil];
+    }
+    
+}
+
 - (void) deleteAllEntities {
+    self.selectedEntity = nil;
     [self.motionEntities removeAllObjects];
+    
+    NSArray *viewsToRemove = [self subviews];
+    for (UIView *v in viewsToRemove) {
+        [v removeFromSuperview];
+    }
 }
 
 - (void)increaseTextEntityFontSize {
@@ -961,6 +987,12 @@
             [self selectEntity: self.motionEntities[i]];
             break;
         }
+    }
+}
+
+- (void)releaseShapeSelection {
+    if(self.selectedEntity) {
+        self.selectedEntity = nil;
     }
 }
 

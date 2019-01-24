@@ -40,12 +40,14 @@
 - (void)setShapeConfiguration:(NSDictionary *)dict;
 - (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType: (NSString *)textShapeFontType textShapeFontSize: (NSNumber *)textShapeFontSize textShapeText: (NSString *)textShapeText imageShapeAsset: (NSString *)imageShapeAsset shouldSelectEntity: (BOOL)shouldSelectEntity;
 - (void)releaseSelectedEntity;
-- (void) deleteAllEntities;
+- (void)deleteEntityById:(NSString *)shapeId;
+- (void)deleteAllEntities;
 - (void)increaseTextEntityFontSize;
 - (void)decreaseTextEntityFontSize;
 - (void)setTextEntityText:(NSString *)newText;
 - (void)onSelectedShapeConfigChange: (NSString *)changeType actionObject:(NSDictionary *)actionObject;
 - (void)selectShapeById: (NSString *)shapeId;
+- (void)releaseShapeSelection;
 - (void)moveSelectedShape: (NSDictionary *)actionObject;
 - (void)scaleSelectedShape: (NSDictionary *)actionObject;
 - (void)rotateSelectedShape: (NSDictionary *)actionObject;

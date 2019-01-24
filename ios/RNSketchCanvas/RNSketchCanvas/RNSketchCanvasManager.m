@@ -133,10 +133,24 @@ RCT_EXPORT_METHOD(transferToBase64:(nonnull NSNumber *)reactTag type: (NSString*
     }];
 }
 
+RCT_EXPORT_METHOD(releaseShapeSelection:(nonnull NSNumber *)reactTag)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas releaseShapeSelection];
+    }];
+}
+
 RCT_EXPORT_METHOD(deleteSelectedShape:(nonnull NSNumber *)reactTag)
 {
     [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
         [canvas releaseSelectedEntity];
+    }];
+}
+
+RCT_EXPORT_METHOD(deleteShapeById:(nonnull NSNumber *)reactTag shapeId:(NSString *) shapeId)
+{
+    [self runCanvas:reactTag block:^(RNSketchCanvas *canvas) {
+        [canvas deleteEntityById: shapeId];
     }];
 }
 

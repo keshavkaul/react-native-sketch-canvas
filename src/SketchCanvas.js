@@ -257,8 +257,16 @@ class SketchCanvas extends React.Component {
         }
     }
 
+    releaseShapeSelection() {
+        UIManager.dispatchViewManagerCommand(this._handle, UIManager.RNSketchCanvas.Commands.releaseShapeSelection, []);
+    }
+
     deleteSelectedShape() {
         UIManager.dispatchViewManagerCommand(this._handle, UIManager.RNSketchCanvas.Commands.deleteSelectedShape, []);
+    }
+
+    deleteShapeById() {
+        UIManager.dispatchViewManagerCommand(this._handle, UIManager.RNSketchCanvas.Commands.deleteShapeById, []);
     }
 
     deleteAllShapes() {

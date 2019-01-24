@@ -160,6 +160,10 @@ export default class RNSketchCanvas extends React.Component {
         this._sketchCanvas.deletePath(id);
     }
 
+    deleteShapeById() {
+        this._sketchCanvas.deleteShapeById();
+    }
+
     deleteSelectedShape() {
         this._sketchCanvas.deleteSelectedShape();
     }
@@ -174,6 +178,10 @@ export default class RNSketchCanvas extends React.Component {
 
     selectShapeById(id) {
         this._sketchCanvas.selectShapeById(id);
+    }
+
+    releaseShapeSelection() {
+        this._sketchCanvas.releaseShapeSelection();
     }
 
     moveSelectedShape(value) {
