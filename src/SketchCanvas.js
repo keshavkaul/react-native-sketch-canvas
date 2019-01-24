@@ -442,8 +442,8 @@ class SketchCanvas extends React.Component {
                     shapeBorderColor: processColor(this.props.shapeConfiguration.shapeBorderColor),
                     shapeBorderStyle: this.props.shapeConfiguration.shapeBorderStyle,
                     shapeBorderStrokeWidth: this.props.shapeConfiguration.shapeBorderStrokeWidth,
-                    shapeColor: processColor(this.props.strokeColor),
-                    shapeStrokeWidth: this.props.strokeWidth
+                    shapeColor: processColor(this.props.shapeConfiguration.shapeColor),
+                    shapeStrokeWidth: this.props.shapeConfiguration.shapeStrokeWidth
                 }}
                 text={this.state.text}
             />

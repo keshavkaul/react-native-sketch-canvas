@@ -24,7 +24,6 @@
     CGContextRef _drawingContext, _translucentDrawingContext;
     CGImageRef _frozenImage, _translucentFrozenImage;
     BOOL _needsFullRedraw;
-    BOOL _needClear;
 
     UIImage *_backgroundImage;
     UIImage *_backgroundImageScaled;
