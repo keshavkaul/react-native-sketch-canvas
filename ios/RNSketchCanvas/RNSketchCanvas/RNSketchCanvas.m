@@ -278,10 +278,10 @@
 }
 
 - (void)newPath:(int) pathId strokeColor:(UIColor*) strokeColor strokeWidth:(int) strokeWidth {
-    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
-        self.entityStrokeColor = strokeColor;
-    }
-    self.entityStrokeWidth = strokeWidth;
+//    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
+//        self.entityStrokeColor = strokeColor;
+//    }
+//    self.entityStrokeWidth = strokeWidth;
     
     _currentPath = [[RNSketchData alloc]
                     initWithId: pathId
@@ -291,9 +291,9 @@
 }
 
 - (void) addPath:(int) pathId strokeColor:(UIColor*) strokeColor strokeWidth:(int) strokeWidth points:(NSArray*) points {
-    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
-        self.entityStrokeColor = strokeColor;
-    }
+//    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
+//        self.entityStrokeColor = strokeColor;
+//    }
     
     bool exist = false;
     for(int i=0; i<_paths.count; i++) {
