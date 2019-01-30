@@ -12,6 +12,7 @@
 #import "entities/TriangleEntity.h"
 #import "entities/ArrowEntity.h"
 #import "entities/TextEntity.h"
+#import "entities/ImageEntity.h"
 
 @implementation RNSketchCanvas
 {
@@ -585,7 +586,7 @@
     }
 }
 
-- (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType:(NSString *)textShapeFontType textShapeFontSize:(NSNumber *)textShapeFontSize textShapeText:(NSString *)textShapeText imageShapeAsset:(NSString *)imageShapeAsset shouldSelectEntity: (BOOL)shouldSelectEntity{
+- (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType:(NSString *)textShapeFontType textShapeFontSize:(NSNumber *)textShapeFontSize textShapeText:(NSString *)textShapeText imageShapeAsset:(NSString *)imageShapeAsset shouldSelectEntity: (BOOL)shouldSelectEntity shapeName: (NSString *)shapeName{
     
     MotionEntity *newEntity = nil;
     switch ([@[@"Circle", @"Rect", @"Square", @"Triangle", @"Arrow", @"Text", @"Image"] indexOfObject: shapeType]) {
@@ -605,7 +606,10 @@
             newEntity = [self addTextEntity:shapeId fontType:textShapeFontType withFontSize:textShapeFontSize withText:textShapeText];
             break;
         case 6:
-            // TODO: ImageEntity Doesn't exist yet
+            if(shapeName) {
+                newEntity = [self addImageEntity:shapeId width:300 andHeight:300 image: shapeName];
+                break;
+            }
         case 0:
         case NSNotFound:
         default: {
@@ -736,6 +740,29 @@
     return entity;
 }
 
+- (ImageEntity *)addImageEntity:(NSString *)shapeId width:(NSInteger)width andHeight: (NSInteger)height image:(NSString *) imageName{
+    CGFloat centerX = CGRectGetMidX(self.bounds);
+    CGFloat centerY = CGRectGetMidY(self.bounds);
+    
+    ImageEntity *entity = [[ImageEntity alloc]
+                           initAndSetupWithParent:shapeId
+                           parentWidth:self.bounds.size.width
+                           parentHeight:self.bounds.size.height
+                           parentCenterX:centerX
+                           parentCenterY:centerY
+                           parentScreenScale:self.window.screen.scale
+                           width:width
+                           height:height
+                           imageName:imageName
+                           bordersPadding:5.0f
+                           borderStyle:self.entityBorderStyle
+                           borderStrokeWidth:self.entityBorderStrokeWidth
+                           borderStrokeColor:self.entityBorderColor
+                           entityStrokeWidth:self.entityStrokeWidth
+                           entityStrokeColor:self.entityStrokeColor];
+    return entity;
+}
+
 - (void)selectEntity:(MotionEntity *)entity {
     if (self.selectedEntity) {
         [self.selectedEntity setIsSelected:NO];
@@ -784,6 +811,7 @@
         entityToRemove = nil;
         [self selectEntity:entityToRemove];
         [self onShapeSelectionChanged:nil];
+        [self setNeedsDisplay];
     }
 }
 
@@ -801,6 +829,7 @@
         entityToRemove = nil;
         [self selectEntity:entityToRemove];
         [self onShapeSelectionChanged:nil];
+        
     }
     
 }
@@ -992,6 +1021,7 @@
 - (void)releaseShapeSelection {
     if(self.selectedEntity) {
         self.selectedEntity = nil;
+        [self setNeedsDisplay];
     }
 }
 
