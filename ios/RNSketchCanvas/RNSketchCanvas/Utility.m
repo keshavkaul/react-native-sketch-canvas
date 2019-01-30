@@ -7,6 +7,7 @@
 //
 
 #import "Utility.h"
+#import "entities/base/MotionEntity.h"
 
 CGPoint midPoint (CGPoint p1, CGPoint p2) {
     return CGPointMake((p1.x + p2.x) * 0.5, (p1.y + p2.y) * 0.5);
@@ -71,6 +72,32 @@ CGPoint midPoint (CGPoint p1, CGPoint p2) {
 
 + (CGFloat)crossProduct:(CGFloat)ax ay: (CGFloat)ay bx: (CGFloat)bx by: (CGFloat)by cx: (CGFloat)cx cy: (CGFloat)cy {
     return (ax - cx) * (by - cy) - (bx - cx) * (ay - cy);
+}
+
++ (NSDictionary *)getPointData: (CGPoint)point {
+    return @{@"x": [NSNumber numberWithFloat:point.x],
+             @"y": [NSNumber numberWithFloat:point.y] };
+}
+
++ (NSDictionary *)getFrameData: (CGRect)rect {
+    return @{
+             @"origin": [self getPointData: rect.origin],
+             @"size": @{@"height": [NSNumber numberWithFloat: rect.size.height], @"width": [NSNumber numberWithFloat: rect.size.width] }};
+}
+
++ (NSDictionary *)getEntityConfig: (MotionEntity *)entityObject {
+    return  @{
+              @"shapeId": entityObject.entityId,
+              @"scale": [NSNumber numberWithFloat:(entityObject.scale) ],
+              @"positon": entityObject,
+              @"strokeColor": entityObject.entityStrokeColor,
+              @"borderStrokeColor": entityObject.borderStrokeColor,
+              @"strokeWidth": [NSNumber numberWithFloat:(entityObject.entityStrokeWidth)],
+              @"borderStrokeWidth": [NSNumber numberWithFloat:(entityObject.borderStrokeWidth)],
+              @"centerPoint": [self getPointData: entityObject.centerPoint],
+              @"rotation": [NSNumber numberWithFloat:(entityObject.rotation) ],
+              @"frame": [self getFrameData:(CGRect)([(MotionEntity *)entityObject frame])]
+              };
 }
 
 @end

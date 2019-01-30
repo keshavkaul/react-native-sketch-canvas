@@ -12,7 +12,8 @@
 {
 }
 
-- (instancetype)initAndSetupWithParent: (NSInteger)parentWidth
+- (instancetype)initAndSetupWithParent: (NSString *)entityId
+                           parentWidth: (NSInteger)parentWidth
                           parentHeight: (NSInteger)parentHeight
                          parentCenterX: (CGFloat)parentCenterX
                          parentCenterY: (CGFloat)parentCenterY
@@ -43,6 +44,8 @@
         self.borderStrokeColor = borderStrokeColor;
         self.entityStrokeWidth = entityStrokeWidth;
         self.entityStrokeColor = entityStrokeColor;
+        self.entityId = entityId;
+        self.rotation = 0;
         
         self.backgroundColor = [UIColor clearColor];
     }
@@ -63,10 +66,19 @@
 
 - (void)rotateEntityBy:(CGFloat)rotationInRadians {
     [self setTransform:CGAffineTransformRotate(self.transform, rotationInRadians)];
+    self.rotation = self.rotation + rotationInRadians;
+    if(self.rotation > 6.28319){
+        self.rotation = self.rotation - 6.28319;
+    }
 }
 
 - (void)moveEntityTo:(CGPoint)locationDiff {
     [self setTransform:CGAffineTransformTranslate(self.transform, locationDiff.x, locationDiff.y)];
+    self.centerPoint = self.center;
+}
+
+- (void)moveEntityToFrame:(CGRect)newFrame {
+    self.frame = newFrame;
     self.centerPoint = self.center;
 }
 

@@ -13,7 +13,8 @@
 {
 }
 
-- (instancetype)initAndSetupWithParent: (NSInteger)parentWidth
+- (instancetype)initAndSetupWithParent: (NSString *)entityId
+                           parentWidth: (NSInteger)parentWidth
                           parentHeight: (NSInteger)parentHeight
                          parentCenterX: (CGFloat)parentCenterX
                          parentCenterY: (CGFloat)parentCenterY
@@ -49,7 +50,8 @@
     CGFloat realParentCenterY = parentCenterY - initialTextRect.size.height / 4;
 
     
-    self = [super initAndSetupWithParent:parentWidth
+    self = [super initAndSetupWithParent:entityId
+                             parentWidth:parentWidth
                             parentHeight:parentHeight
                            parentCenterX:realParentCenterX
                            parentCenterY:realParentCenterY

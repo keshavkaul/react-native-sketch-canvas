@@ -18,7 +18,7 @@
     RCTEventDispatcher *_eventDispatcher;
     NSMutableArray *_paths;
     RNSketchData *_currentPath;
-
+    
     CGSize _lastSize;
 
     CGContextRef _drawingContext, _translucentDrawingContext;
@@ -65,6 +65,8 @@
         
         self.scaleGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleScale:)];
         self.scaleGesture.delegate = self;
+        
+        self.rotationChange = 0;
         
         [self addGestureRecognizer:self.tapGesture];
         [self addGestureRecognizer:self.rotateGesture];
@@ -276,10 +278,10 @@
 }
 
 - (void)newPath:(int) pathId strokeColor:(UIColor*) strokeColor strokeWidth:(int) strokeWidth {
-    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
-        self.entityStrokeColor = strokeColor;
-    }
-    self.entityStrokeWidth = strokeWidth;
+//    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
+//        self.entityStrokeColor = strokeColor;
+//    }
+//    self.entityStrokeWidth = strokeWidth;
     
     _currentPath = [[RNSketchData alloc]
                     initWithId: pathId
@@ -289,9 +291,9 @@
 }
 
 - (void) addPath:(int) pathId strokeColor:(UIColor*) strokeColor strokeWidth:(int) strokeWidth points:(NSArray*) points {
-    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
-        self.entityStrokeColor = strokeColor;
-    }
+//    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
+//        self.entityStrokeColor = strokeColor;
+//    }
     
     bool exist = false;
     for(int i=0; i<_paths.count; i++) {
@@ -358,6 +360,7 @@
 - (void) clear {
     [_paths removeAllObjects];
     _currentPath = nil;
+    [self deleteAllEntities];
     _needsFullRedraw = YES;
     [self setNeedsDisplay];
     [self notifyPathsUpdate];
@@ -582,41 +585,53 @@
     }
 }
 
-- (void)addEntity:(NSString *)entityType textShapeFontType:(NSString *)textShapeFontType textShapeFontSize:(NSNumber *)textShapeFontSize textShapeText:(NSString *)textShapeText imageShapeAsset:(NSString *)imageShapeAsset {
+- (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType:(NSString *)textShapeFontType textShapeFontSize:(NSNumber *)textShapeFontSize textShapeText:(NSString *)textShapeText imageShapeAsset:(NSString *)imageShapeAsset shouldSelectEntity: (BOOL)shouldSelectEntity{
     
-    switch ([@[@"Circle", @"Rect", @"Square", @"Triangle", @"Arrow", @"Text", @"Image"] indexOfObject: entityType]) {
+    MotionEntity *newEntity = nil;
+    switch ([@[@"Circle", @"Rect", @"Square", @"Triangle", @"Arrow", @"Text", @"Image"] indexOfObject: shapeType]) {
         case 1:
-            [self addRectEntity:300 andHeight:150];
+            newEntity = [self addRectEntity:shapeId width:300 andHeight:150];
             break;
         case 2:
-            [self addRectEntity:300 andHeight:300];
+            newEntity = [self addRectEntity:shapeId width:300 andHeight:300];
             break;
         case 3:
-            [self addTriangleEntity];
+            newEntity = [self addTriangleEntity:shapeId];
             break;
         case 4:
-            [self addArrowEntity];
+            newEntity = [self addArrowEntity:shapeId];
             break;
         case 5:
-            [self addTextEntity:textShapeFontType withFontSize:textShapeFontSize withText:textShapeText];
+            newEntity = [self addTextEntity:shapeId fontType:textShapeFontType withFontSize:textShapeFontSize withText:textShapeText];
             break;
         case 6:
             // TODO: ImageEntity Doesn't exist yet
         case 0:
         case NSNotFound:
         default: {
-            [self addCircleEntity];
+            newEntity = [self addCircleEntity:shapeId];
             break;
+        }
+    }
+    if(newEntity){
+        [self.motionEntities addObject: newEntity];
+        if (shouldSelectEntity) {
+            [self onShapeSelectionChanged:newEntity];
+            [self selectEntity:newEntity];
+        }
+        if(_onShapeAdded) {
+            _onShapeAdded(@{ @"shapeDetails": [Utility getEntityConfig:newEntity], @"shapeType": shapeType });
         }
     }
 }
 
-- (void)addCircleEntity {
+- (CircleEntity *)addCircleEntity: (NSString *)shapeId {
     CGFloat centerX = CGRectGetMidX(self.bounds);
     CGFloat centerY = CGRectGetMidY(self.bounds);
     
     CircleEntity *entity = [[CircleEntity alloc]
-                            initAndSetupWithParent:self.bounds.size.width
+                            initAndSetupWithParent:shapeId
+                            parentWidth:self.bounds.size.width
                             parentHeight:self.bounds.size.height
                             parentCenterX:centerX
                             parentCenterY:centerY
@@ -629,18 +644,16 @@
                             borderStrokeColor:self.entityBorderColor
                             entityStrokeWidth:self.entityStrokeWidth
                             entityStrokeColor:self.entityStrokeColor];
-    
-    [self.motionEntities addObject:entity];
-    [self onShapeSelectionChanged:entity];
-    [self selectEntity:entity];
+    return entity;
 }
 
-- (void)addRectEntity:(NSInteger)width andHeight: (NSInteger)height {
+- (RectEntity *)addRectEntity:(NSString *)shapeId width:(NSInteger)width andHeight: (NSInteger)height {
     CGFloat centerX = CGRectGetMidX(self.bounds);
     CGFloat centerY = CGRectGetMidY(self.bounds);
     
     RectEntity *entity = [[RectEntity alloc]
-                          initAndSetupWithParent:self.bounds.size.width
+                          initAndSetupWithParent:shapeId
+                          parentWidth:self.bounds.size.width
                           parentHeight:self.bounds.size.height
                           parentCenterX:centerX
                           parentCenterY:centerY
@@ -653,18 +666,16 @@
                           borderStrokeColor:self.entityBorderColor
                           entityStrokeWidth:self.entityStrokeWidth
                           entityStrokeColor:self.entityStrokeColor];
-    
-    [self.motionEntities addObject:entity];
-    [self onShapeSelectionChanged:entity];
-    [self selectEntity:entity];
+    return entity;
 }
 
-- (void)addTriangleEntity {
+- (TriangleEntity *)addTriangleEntity:(NSString *)shapeId  {
     CGFloat centerX = CGRectGetMidX(self.bounds);
     CGFloat centerY = CGRectGetMidY(self.bounds);
     
     TriangleEntity *entity = [[TriangleEntity alloc]
-                              initAndSetupWithParent:self.bounds.size.width
+                              initAndSetupWithParent:shapeId
+                              parentWidth:self.bounds.size.width
                               parentHeight:self.bounds.size.height
                               parentCenterX:centerX
                               parentCenterY:centerY
@@ -677,59 +688,52 @@
                               borderStrokeColor:self.entityBorderColor
                               entityStrokeWidth:self.entityStrokeWidth
                               entityStrokeColor:self.entityStrokeColor];
-    
-    [self.motionEntities addObject:entity];
-    [self onShapeSelectionChanged:entity];
-    [self selectEntity:entity];
+    return entity;
 }
 
-- (void)addArrowEntity {
+- (ArrowEntity *)addArrowEntity: (NSString *)shapeId  {
     CGFloat centerX = CGRectGetMidX(self.bounds);
     CGFloat centerY = CGRectGetMidY(self.bounds);
     
     ArrowEntity *entity = [[ArrowEntity alloc]
-                              initAndSetupWithParent:self.bounds.size.width
-                              parentHeight:self.bounds.size.height
-                              parentCenterX:centerX
-                              parentCenterY:centerY
-                              parentScreenScale:self.window.screen.scale
-                              width:300
-                              height:300
-                              bordersPadding:5.0f
-                              borderStyle:self.entityBorderStyle
-                              borderStrokeWidth:self.entityBorderStrokeWidth
-                              borderStrokeColor:self.entityBorderColor
-                              entityStrokeWidth:self.entityStrokeWidth
-                              entityStrokeColor:self.entityStrokeColor];
-    
-    [self.motionEntities addObject:entity];
-    [self onShapeSelectionChanged:entity];
-    [self selectEntity:entity];
-}
-
-- (void)addTextEntity:(NSString *)fontType withFontSize: (NSNumber *)fontSize withText: (NSString *)text {
-    CGFloat centerX = CGRectGetMidX(self.bounds);
-    CGFloat centerY = CGRectGetMidY(self.bounds);
-    
-    TextEntity *entity = [[TextEntity alloc]
-                           initAndSetupWithParent:self.bounds.size.width
+                           initAndSetupWithParent:shapeId
+                           parentWidth:self.bounds.size.width
                            parentHeight:self.bounds.size.height
                            parentCenterX:centerX
                            parentCenterY:centerY
                            parentScreenScale:self.window.screen.scale
-                           text:text
-                           fontType:fontType
-                           fontSize:[fontSize floatValue]
+                           width:300
+                           height:300
                            bordersPadding:5.0f
                            borderStyle:self.entityBorderStyle
                            borderStrokeWidth:self.entityBorderStrokeWidth
                            borderStrokeColor:self.entityBorderColor
                            entityStrokeWidth:self.entityStrokeWidth
                            entityStrokeColor:self.entityStrokeColor];
+    return entity;
+}
+
+- (TextEntity *)addTextEntity:(NSString *)shapeId fontType:(NSString *)fontType withFontSize: (NSNumber *)fontSize withText: (NSString *)text {
+    CGFloat centerX = CGRectGetMidX(self.bounds);
+    CGFloat centerY = CGRectGetMidY(self.bounds);
     
-    [self.motionEntities addObject:entity];
-    [self onShapeSelectionChanged:entity];
-    [self selectEntity:entity];
+    TextEntity *entity = [[TextEntity alloc]
+                          initAndSetupWithParent:shapeId
+                          parentWidth:self.bounds.size.width
+                          parentHeight:self.bounds.size.height
+                          parentCenterX:centerX
+                          parentCenterY:centerY
+                          parentScreenScale:self.window.screen.scale
+                          text:text
+                          fontType:fontType
+                          fontSize:[fontSize floatValue]
+                          bordersPadding:5.0f
+                          borderStyle:self.entityBorderStyle
+                          borderStrokeWidth:self.entityBorderStrokeWidth
+                          borderStrokeColor:self.entityBorderColor
+                          entityStrokeWidth:self.entityStrokeWidth
+                          entityStrokeColor:self.entityStrokeColor];
+    return entity;
 }
 
 - (void)selectEntity:(MotionEntity *)entity {
@@ -783,6 +787,34 @@
     }
 }
 
+- (void)deleteEntityById:(NSString *)shapeId {
+    MotionEntity *entityToRemove = nil;
+    for (MotionEntity *entity in self.motionEntities) {
+        if (entity.entityId == shapeId) {
+            entityToRemove = entity;
+            break;
+        }
+    }
+    if (entityToRemove) {
+        [self.motionEntities removeObject:entityToRemove];
+        [entityToRemove removeFromSuperview];
+        entityToRemove = nil;
+        [self selectEntity:entityToRemove];
+        [self onShapeSelectionChanged:nil];
+    }
+    
+}
+
+- (void) deleteAllEntities {
+    self.selectedEntity = nil;
+    [self.motionEntities removeAllObjects];
+    
+    NSArray *viewsToRemove = [self subviews];
+    for (UIView *v in viewsToRemove) {
+        [v removeFromSuperview];
+    }
+}
+
 - (void)increaseTextEntityFontSize {
     TextEntity *textEntity = [self getSelectedTextEntity];
     if (textEntity) {
@@ -825,22 +857,43 @@
 
 - (void)handleRotate:(UIRotationGestureRecognizer *)sender {
     UIGestureRecognizerState state = [sender state];
-    if (state == UIGestureRecognizerStateBegan || state == UIGestureRecognizerStateChanged) {
-        if (self.selectedEntity) {
-            [self.selectedEntity rotateEntityBy:sender.rotation];
-            [self setNeedsDisplayInRect:self.selectedEntity.bounds];
-        }
-        [sender setRotation:0.0];
+    
+    switch (state) {
+        case UIGestureRecognizerStateBegan:
+            _rotationChange = 0;
+        case UIGestureRecognizerStateChanged:
+            if (self.selectedEntity) {
+                [self.selectedEntity rotateEntityBy:sender.rotation];
+                [self setNeedsDisplayInRect:self.selectedEntity.bounds];
+            }
+            [self onSelectedShapeConfigChange:@"rotate" actionObject: @{ @"value": [NSNumber numberWithFloat:sender.rotation] }];
+             _rotationChange = _rotationChange + sender.rotation;
+            [sender setRotation:0.0];
+            break;
+        case UIGestureRecognizerStateEnded:
+            if (self.selectedEntity) {
+                [self onShapeTransformationEnded: @"rotate" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity], @"rotationChange": [NSNumber numberWithFloat:_rotationChange]}];
+            }
+            break;
+        default:
+            break;
     }
+   
 }
 
 - (void)handleMove:(UIPanGestureRecognizer *)sender {
     UIGestureRecognizerState state = [sender state];
     if (self.selectedEntity) {
         if (state != UIGestureRecognizerStateCancelled) {
-            [self.selectedEntity moveEntityTo:[sender translationInView:self.selectedEntity]];
+            CGPoint newPoint = [sender translationInView:self.selectedEntity];
+            NSDictionary *points = @{ @"x": [NSNumber numberWithDouble:newPoint.x], @"y": [NSNumber numberWithDouble:newPoint.y] };
+            [self.selectedEntity moveEntityTo:newPoint];
+            [self onSelectedShapeConfigChange:@"move" actionObject: @{ @"value": points}];
             [sender setTranslation:CGPointZero inView:sender.view];
             [self setNeedsDisplayInRect:self.selectedEntity.bounds];
+            if (state == UIGestureRecognizerStateEnded) {
+                    [self onShapeTransformationEnded: @"move" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity]}];
+            }
         }
     }
 }
@@ -852,7 +905,12 @@
             [self.selectedEntity scaleEntityBy:sender.scale];
             [self setNeedsDisplayInRect:self.selectedEntity.bounds];
         }
+        [self onSelectedShapeConfigChange:@"scale" actionObject: @{ @"value": [NSNumber numberWithFloat:sender.scale] }];
         [sender setScale:1.0];
+    } else if (state == UIGestureRecognizerStateEnded) {
+        if (self.selectedEntity) {
+            [self onShapeTransformationEnded: @"scale" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity]}];
+        }
     }
 }
 
@@ -870,20 +928,151 @@
 }
 
 - (void)onShapeSelectionChanged:(MotionEntity *)nextEntity {
-    BOOL isShapeSelected = NO;
-    if (nextEntity) {
-        isShapeSelected = YES;
-    }
     if (_onChange) {
-        if (isShapeSelected) {
-            _onChange(@{ @"isShapeSelected": @YES });
+        if (nextEntity) {
+            _onChange(@{ @"selectedShape": [Utility getEntityConfig:nextEntity ] });
         } else {
             // Add delay!
-            _onChange(@{ @"isShapeSelected": @NO });
+            _onChange(@{ @"selectedShape": @{} });
         }
     }
 }
 
+- (void)onShapeTransformationEnded: (NSString *)changeType actionObject:(NSDictionary *)actionObject {
+    switch ([@[@"move", @"scale", @"rotate"] indexOfObject: changeType])  {
+        case 0: // change in position
+            _onShapeTransformationEnded(@{ @"transform": @"move", @"action": actionObject});
+            break;
+            
+        case 1: // change in scale
+            _onShapeTransformationEnded(@{ @"transform": @"scale", @"action": actionObject});
+            break;
+            
+        case 2: // change in rotation
+            _onShapeTransformationEnded(@{ @"transform": @"rotate", @"action": actionObject});
+            break;
+            
+        default:
+            _onShapeTransformationEnded(@{ @"transform": @"none"});
+            break;
+    }
+}
+
+- (void)onSelectedShapeConfigChange: (NSString *)changeType actionObject:(NSDictionary *)actionObject {
+    switch ([@[@"move", @"scale", @"rotate"] indexOfObject: changeType])  {
+        case 0: // change in position
+            _onShapeConfigChange(@{ @"transform": @"move", @"action": actionObject});
+            break;
+            
+        case 1: // change in scale
+            _onShapeConfigChange(@{ @"transform": @"scale", @"action": actionObject});
+            break;
+           
+        case 2: // change in rotation
+            _onShapeConfigChange(@{ @"transform": @"rotate", @"action": actionObject});
+            break;
+            
+        default:
+            _onShapeConfigChange(@{ @"transform": @"none"});
+            break;
+    }
+}
+
+- (void)selectShapeById: (NSString *)shapeId {
+    int arrayCount = (int) [self.motionEntities count];
+    for (int i=0; i<arrayCount; i++)
+    {
+        if ([((MotionEntity *)self.motionEntities[i]).entityId isEqualToString:shapeId]) {
+            [self selectEntity: self.motionEntities[i]];
+            break;
+        }
+    }
+}
+
+- (void)releaseShapeSelection {
+    if(self.selectedEntity) {
+        self.selectedEntity = nil;
+    }
+}
+
+- (void)moveSelectedShape: (NSDictionary *)actionObject {
+    if(self.selectedEntity) {
+        CGFloat newValueX = [[actionObject valueForKeyPath:@"value.x"] floatValue];
+        CGFloat newValueY = [[actionObject valueForKeyPath:@"value.y"] floatValue];
+        CGPoint newPoint = CGPointMake(newValueX, newValueY);
+        [self.selectedEntity moveEntityTo: newPoint];
+        [self setNeedsDisplayInRect:self.selectedEntity.bounds];
+    }
+}
+
+- (void)scaleSelectedShape: (NSDictionary *)actionObject {
+    if(self.selectedEntity) {
+        CGFloat newValue = [[actionObject valueForKey:@"value"] floatValue];
+        [self.selectedEntity scaleEntityBy: newValue];
+        [self setNeedsDisplayInRect:self.selectedEntity.bounds];
+    }
+}
+
+- (void)rotateSelectedShape: (NSDictionary *)actionObject {
+    if(self.selectedEntity) {
+        CGFloat newValue = [[actionObject valueForKey:@"value"] floatValue];
+        [self.selectedEntity rotateEntityBy: newValue];
+        [self setNeedsDisplayInRect:self.selectedEntity.bounds];
+    }
+}
+
+- (void)moveShapeById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject {
+    MotionEntity *transformedEntity = [self getShapeById:shapeId];
+    if(transformedEntity) {
+        CGFloat newValueX = [[actionObject valueForKeyPath:@"value.x"] floatValue];
+        CGFloat newValueY = [[actionObject valueForKeyPath:@"value.y"] floatValue];
+        CGPoint newPoint = CGPointMake(newValueX, newValueY);
+        [transformedEntity moveEntityTo: newPoint];
+        [self setNeedsDisplayInRect:transformedEntity.bounds];
+    }
+}
+
+- (void)moveShapeToFrameById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject {
+    MotionEntity *transformedEntity = [self getShapeById:shapeId];
+    if(transformedEntity) {
+        CGFloat newValueX = [[actionObject valueForKeyPath:@"value.origin.x"] floatValue];
+        CGFloat newValueY = [[actionObject valueForKeyPath:@"value.origin.y"] floatValue];
+        CGFloat newValueWidth = [[actionObject valueForKeyPath:@"value.size.width"] floatValue];
+        CGFloat newValueHeight = [[actionObject valueForKeyPath:@"value.size.height"] floatValue];
+        [transformedEntity moveEntityToFrame:CGRectMake( newValueX, newValueY, newValueWidth, newValueHeight)];
+        [self setNeedsDisplayInRect:transformedEntity.bounds];
+    }
+}
+
+- (void)scaleShapeById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject {
+    MotionEntity *transformedEntity = [self getShapeById:shapeId];
+    if(transformedEntity) {
+        CGFloat newValue = [[actionObject valueForKey:@"value"] floatValue];
+        [transformedEntity scaleEntityBy: newValue];
+        [self setNeedsDisplayInRect:transformedEntity.bounds];
+    }
+}
+
+- (void)rotateShapeById:(NSString *)shapeId actionObject:(NSDictionary *)actionObject {
+    MotionEntity *transformedEntity = [self getShapeById:shapeId];
+    if(transformedEntity) {
+        CGFloat newValue = [[actionObject valueForKey:@"value"] floatValue];
+        [transformedEntity rotateEntityBy: newValue];
+        [self setNeedsDisplayInRect:transformedEntity.bounds];
+    }
+}
+
+- (MotionEntity *) getShapeById: (NSString *)shapeId {
+    int arrayCount = (int) [self.motionEntities count];
+    MotionEntity *nextEntity = nil;
+    for (int i=0; i<arrayCount; i++)
+    {
+        if ([((MotionEntity *)self.motionEntities[i]).entityId isEqualToString:shapeId]) {
+            nextEntity=  self.motionEntities[i];
+        }
+    }
+    return nextEntity;
+}
 @end
 
 @implementation CanvasText
