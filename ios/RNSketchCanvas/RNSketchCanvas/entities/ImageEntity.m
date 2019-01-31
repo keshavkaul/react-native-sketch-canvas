@@ -61,15 +61,12 @@
 - (void)drawContent:(CGRect)rect withinContext:(CGContextRef)contextRef {
     CGContextSetLineWidth(contextRef, self.entityStrokeWidth / self.scale);
     CGContextSetStrokeColorWithColor(contextRef, [self.entityStrokeColor CGColor]);
-    
     CGRect entityRect = CGRectMake(0, 0, rect.size.width, rect.size.height);
     CGFloat padding = (self.bordersPadding + self.entityStrokeWidth) / self.scale;
     entityRect = CGRectInset(entityRect, padding , padding);
     NSString *imageFile = [NSString stringWithFormat:@"%@.png", self.imageName];
     UIImage *imageFromBundle = [UIImage imageNamed:imageFile inBundle:NSBundle.mainBundle compatibleWithTraitCollection:nil];
-    CGImageRef image = [imageFromBundle CGImage];
-    CGContextDrawImage(contextRef, entityRect, image);
-    
+    [imageFromBundle drawInRect:entityRect];
 }
 
 @end

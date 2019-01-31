@@ -187,7 +187,7 @@ class SketchCanvas extends React.Component {
                 config.textShapeText,
                 config.imageShapeAsset,
                 shouldSelectEntity,
-                config.shapeName
+                config.shapeName,
             ]);
         }
     }

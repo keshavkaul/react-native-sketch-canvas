@@ -624,7 +624,7 @@
             [self selectEntity:newEntity];
         }
         if(_onShapeAdded) {
-            _onShapeAdded(@{ @"shapeDetails": [Utility getEntityConfig:newEntity], @"shapeType": shapeType });
+            _onShapeAdded(@{ @"shapeDetails": [Utility getEntityConfig:newEntity], @"shapeType": shapeType , @"shapeName": shapeName});
         }
     }
 }
