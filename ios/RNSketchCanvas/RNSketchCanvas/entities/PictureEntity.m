@@ -31,11 +31,9 @@
     
     
     UIImage *picture = [UIImage imageWithContentsOfFile:filePath];
-    CGFloat height = picture.size.height;
-    CGFloat width = picture.size.width;
-    
-    // scale image to 300 to width
-    
+    CGFloat scaleFactor = picture.size.height/ 300;
+    CGFloat height = 300;
+    CGFloat width = picture.size.width/ scaleFactor;
     CGFloat realParentCenterX = parentCenterX - width / 4;
     CGFloat realParentCenterY = parentCenterY - height / 4;
     CGFloat realWidth = width / 2;
