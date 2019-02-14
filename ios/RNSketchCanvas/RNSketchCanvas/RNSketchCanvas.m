@@ -13,6 +13,7 @@
 #import "entities/ArrowEntity.h"
 #import "entities/TextEntity.h"
 #import "entities/ImageEntity.h"
+#import "entities/PictureEntity.h"
 
 @implementation RNSketchCanvas
 {
@@ -586,10 +587,10 @@
     }
 }
 
-- (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType:(NSString *)textShapeFontType textShapeFontSize:(NSNumber *)textShapeFontSize textShapeText:(NSString *)textShapeText imageShapeAsset:(NSString *)imageShapeAsset shouldSelectEntity: (BOOL)shouldSelectEntity shapeName: (NSString *)shapeName{
+- (void)addEntity:(NSString *)shapeId shapeType:(NSString *)shapeType textShapeFontType:(NSString *)textShapeFontType textShapeFontSize:(NSNumber *)textShapeFontSize textShapeText:(NSString *)textShapeText imageShapeAsset:(NSString *)imageShapeAsset shouldSelectEntity: (BOOL)shouldSelectEntity shapeName: (NSString *)shapeName pictureDetails: (NSDictionary*) pictureDetails {
     
     MotionEntity *newEntity = nil;
-    switch ([@[@"Circle", @"Rect", @"Square", @"Triangle", @"Arrow", @"Text", @"Image"] indexOfObject: shapeType]) {
+    switch ([@[@"Circle", @"Rect", @"Square", @"Triangle", @"Arrow", @"Text", @"Image", @"Picture"] indexOfObject: shapeType]) {
         case 1:
             newEntity = [self addRectEntity:shapeId width:300 andHeight:150];
             break;
@@ -610,6 +611,11 @@
                 newEntity = [self addImageEntity:shapeId width:300 andHeight:300 image: shapeName];
                 break;
             }
+        case 7:
+            if (pictureDetails){
+                newEntity = [self addP]
+            }
+            break;
         case 0:
         case NSNotFound:
         default: {
@@ -760,6 +766,31 @@
                            borderStrokeColor:self.entityBorderColor
                            entityStrokeWidth:self.entityStrokeWidth
                            entityStrokeColor:self.entityStrokeColor];
+    return entity;
+}
+
+- (PictureEntity *)addPictureEntity:(NSString *)shapeId pictureDetails:(NSString *) pictureDetails{
+    CGFloat centerX = CGRectGetMidX(self.bounds);
+    CGFloat centerY = CGRectGetMidY(self.bounds);
+    
+    NSString *filePath = [pictureDetails valueForKey: @"filePath"];
+    NSString *imageURL =[pictureDetails valueForKey: @"imageURL"];
+    
+    PictureEntity *entity = [[PictureEntity alloc]
+                             initAndSetupWithParent:shapeId
+                             parentWidth:self.bounds.size.width
+                             parentHeight:self.bounds.size.height
+                             parentCenterX:centerX
+                             parentCenterY:centerY
+                             parentScreenScale:self.window.screen.scale
+                             filePath:filePath
+                             imageURL: imageURL
+                             bordersPadding:5.0f
+                             borderStyle:self.entityBorderStyle
+                             borderStrokeWidth:self.entityBorderStrokeWidth
+                             borderStrokeColor:self.entityBorderColor
+                             entityStrokeWidth:self.entityStrokeWidth
+                             entityStrokeColor:self.entityStrokeColor];
     return entity;
 }
 
