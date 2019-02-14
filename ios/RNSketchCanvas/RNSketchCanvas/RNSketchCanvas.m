@@ -613,7 +613,7 @@
             }
         case 7:
             if (pictureDetails){
-                newEntity = [self addP]
+                newEntity = [self addPictureEntity:shapeId pictureDetails:pictureDetails];
             }
             break;
         case 0:
@@ -769,7 +769,7 @@
     return entity;
 }
 
-- (PictureEntity *)addPictureEntity:(NSString *)shapeId pictureDetails:(NSString *) pictureDetails{
+- (PictureEntity *)addPictureEntity:(NSString *)shapeId pictureDetails:(NSDictionary *) pictureDetails{
     CGFloat centerX = CGRectGetMidX(self.bounds);
     CGFloat centerY = CGRectGetMidY(self.bounds);
     
