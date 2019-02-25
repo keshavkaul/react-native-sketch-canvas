@@ -39,7 +39,7 @@
     CGFloat imageHeight = image.size.height;
     CGFloat imageWidth = image.size.width;
     
-    CGFloat sideLength = 500;
+    CGFloat sideLength = 700;
     
     CGFloat scaleFactor = 1.0;
     CGFloat height = sideLength;
