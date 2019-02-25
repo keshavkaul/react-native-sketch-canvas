@@ -20,7 +20,7 @@
                          parentCenterX: (CGFloat)parentCenterX
                          parentCenterY: (CGFloat)parentCenterY
                      parentScreenScale: (CGFloat)parentScreenScale
-                             filePath: (NSString *)filePath
+                              filePath: (NSString *)filePath
                               imageURL: (NSString *) imageURL
                         bordersPadding: (CGFloat)bordersPadding
                            borderStyle: (enum BorderStyle)borderStyle
@@ -29,11 +29,31 @@
                      entityStrokeWidth: (CGFloat)entityStrokeWidth
                      entityStrokeColor: (UIColor *)entityStrokeColor {
     
+    // fetch image
+    UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+    if(image == nil) {
+        image = [UIImage imageWithData: [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: imageURL]]];
+    }
     
-    UIImage *picture = [UIImage imageWithContentsOfFile:filePath];
-    CGFloat scaleFactor = picture.size.height/ 300;
-    CGFloat height = 300;
-    CGFloat width = picture.size.width/ scaleFactor;
+    // check for portatait or landscape
+    CGFloat imageHeight = image.size.height;
+    CGFloat imageWidth = image.size.width;
+    
+    CGFloat sideLength = 500;
+    
+    CGFloat scaleFactor = 1.0;
+    CGFloat height = sideLength;
+    CGFloat width = sideLength;
+    
+    // set height or width to sideLength
+    if(imageHeight > imageWidth) {
+        scaleFactor = imageHeight / sideLength;
+        width = imageWidth / scaleFactor;
+    } else {
+        scaleFactor = imageWidth / sideLength;
+        height = imageHeight / scaleFactor;
+    }
+    
     CGFloat realParentCenterX = parentCenterX - width / 4;
     CGFloat realParentCenterY = parentCenterY - height / 4;
     CGFloat realWidth = width / 2;
@@ -57,7 +77,7 @@
     
     if (self) {
         self.MIN_SCALE = 0.3f;
-        self.imageObject = picture;
+        self.imageObject = image;
     }
     return self;
 }
