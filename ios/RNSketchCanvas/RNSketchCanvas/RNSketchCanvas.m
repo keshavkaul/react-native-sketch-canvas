@@ -1050,10 +1050,7 @@
 }
 
 - (void)releaseShapeSelection {
-    if(self.selectedEntity) {
-        self.selectedEntity = nil;
-        [self setNeedsDisplay];
-    }
+    [self selectEntity: nil];
 }
 
 - (void)moveSelectedShape: (NSDictionary *)actionObject {
