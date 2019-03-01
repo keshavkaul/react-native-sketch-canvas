@@ -19,6 +19,7 @@
 		DEFBA25D1F322B6000A4545C /* RNSketchCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA25C1F322B6000A4545C /* RNSketchCanvas.m */; };
 		DEFBA25E1F322B6000A4545C /* RNSketchCanvas.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DEFBA25B1F322B6000A4545C /* RNSketchCanvas.h */; };
 		ED5931E621FF0BC10078ADC0 /* ImageEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = ED5931E521FF0BC10078ADC0 /* ImageEntity.m */; };
+		ED74814822154A2700AC65FA /* PictureEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = ED74814622154A2700AC65FA /* PictureEntity.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -59,6 +60,8 @@
 		DEFBA25C1F322B6000A4545C /* RNSketchCanvas.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNSketchCanvas.m; sourceTree = "<group>"; };
 		ED5931E421FF0A820078ADC0 /* ImageEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageEntity.h; sourceTree = "<group>"; };
 		ED5931E521FF0BC10078ADC0 /* ImageEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageEntity.m; sourceTree = "<group>"; };
+		ED74814622154A2700AC65FA /* PictureEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PictureEntity.m; sourceTree = "<group>"; };
+		ED74814722154A2700AC65FA /* PictureEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureEntity.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +101,8 @@
 				8579D13621889DE500773C27 /* TextEntity.m */,
 				ED5931E421FF0A820078ADC0 /* ImageEntity.h */,
 				ED5931E521FF0BC10078ADC0 /* ImageEntity.m */,
+				ED74814722154A2700AC65FA /* PictureEntity.h */,
+				ED74814622154A2700AC65FA /* PictureEntity.m */,
 			);
 			path = entities;
 			sourceTree = "<group>";
@@ -194,6 +199,7 @@
 				DEFBA25D1F322B6000A4545C /* RNSketchCanvas.m in Sources */,
 				8579D13721889DE500773C27 /* TextEntity.m in Sources */,
 				DED3A13720A4159A00D72FBF /* Utility.m in Sources */,
+				ED74814822154A2700AC65FA /* PictureEntity.m in Sources */,
 				85C9F6F2218879DB00BD64B4 /* RectEntity.m in Sources */,
 				DE0C99801F32D596001BDE8B /* RNSketchData.m in Sources */,
 				ED5931E621FF0BC10078ADC0 /* ImageEntity.m in Sources */,
