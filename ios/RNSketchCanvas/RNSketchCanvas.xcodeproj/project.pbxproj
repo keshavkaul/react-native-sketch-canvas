@@ -20,6 +20,7 @@
 		DEFBA25E1F322B6000A4545C /* RNSketchCanvas.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = DEFBA25B1F322B6000A4545C /* RNSketchCanvas.h */; };
 		ED5931E621FF0BC10078ADC0 /* ImageEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = ED5931E521FF0BC10078ADC0 /* ImageEntity.m */; };
 		ED74814822154A2700AC65FA /* PictureEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = ED74814622154A2700AC65FA /* PictureEntity.m */; };
+		ED8E653422368BB000E45C46 /* DropzoneView.m in Sources */ = {isa = PBXBuildFile; fileRef = ED8E653322368BB000E45C46 /* DropzoneView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -62,6 +63,8 @@
 		ED5931E521FF0BC10078ADC0 /* ImageEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageEntity.m; sourceTree = "<group>"; };
 		ED74814622154A2700AC65FA /* PictureEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PictureEntity.m; sourceTree = "<group>"; };
 		ED74814722154A2700AC65FA /* PictureEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureEntity.h; sourceTree = "<group>"; };
+		ED8E653222368BB000E45C46 /* DropzoneView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DropzoneView.h; sourceTree = "<group>"; };
+		ED8E653322368BB000E45C46 /* DropzoneView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DropzoneView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +138,8 @@
 				DE0C997F1F32D596001BDE8B /* RNSketchData.m */,
 				DED3A13620A4159A00D72FBF /* Utility.h */,
 				DED3A13520A4159A00D72FBF /* Utility.m */,
+				ED8E653222368BB000E45C46 /* DropzoneView.h */,
+				ED8E653322368BB000E45C46 /* DropzoneView.m */,
 			);
 			path = RNSketchCanvas;
 			sourceTree = "<group>";
@@ -197,6 +202,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEFBA25D1F322B6000A4545C /* RNSketchCanvas.m in Sources */,
+				ED8E653422368BB000E45C46 /* DropzoneView.m in Sources */,
 				8579D13721889DE500773C27 /* TextEntity.m in Sources */,
 				DED3A13720A4159A00D72FBF /* Utility.m in Sources */,
 				ED74814822154A2700AC65FA /* PictureEntity.m in Sources */,

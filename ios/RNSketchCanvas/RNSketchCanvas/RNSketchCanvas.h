@@ -8,6 +8,7 @@
 
 @property (nonatomic, copy) RCTBubblingEventBlock onChange;
 @property (nonatomic, copy) RCTBubblingEventBlock onShapeAdded;
+@property (nonatomic, copy) RCTBubblingEventBlock onShapeDeleted;
 @property (nonatomic, copy) RCTBubblingEventBlock onShapeConfigChange;
 @property (nonatomic, copy) RCTBubblingEventBlock onShapeTransformationEnded;
 
