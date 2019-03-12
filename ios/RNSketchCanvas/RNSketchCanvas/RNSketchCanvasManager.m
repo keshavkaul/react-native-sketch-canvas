@@ -29,6 +29,7 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onShapeConfigChange, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onShapeAdded, RCTBubblingEventBlock);
+RCT_EXPORT_VIEW_PROPERTY(onShapeDeleted, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onShapeTransformationEnded, RCTBubblingEventBlock);
 
 #pragma mark - Props

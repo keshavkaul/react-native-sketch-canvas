@@ -14,7 +14,7 @@
 #import "entities/TextEntity.h"
 #import "entities/ImageEntity.h"
 #import "entities/PictureEntity.h"
-
+#import "DropZoneView.h"
 @implementation RNSketchCanvas
 {
     RCTEventDispatcher *_eventDispatcher;
@@ -32,6 +32,8 @@
     NSString *_backgroundImageContentMode;
     
     NSArray *_arrTextOnSketch, *_arrSketchOnText;
+    
+    DropzoneView *dropzoneView;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -77,6 +79,19 @@
         
     }
     return self;
+}
+
+-(DropzoneView *) initalizeDropzoneView {
+    CGRect sketchPadFrame = [self frame];
+    CGFloat h = sketchPadFrame.size.height/4;
+    CGFloat w = h;
+    CGFloat x = sketchPadFrame.size.width - w;
+    CGFloat y = (sketchPadFrame.size.height - h)/2;
+    
+    // Create Drop Zone UIView
+    CGRect dropZoneFrame =  CGRectMake(x, y, w, h);
+    DropzoneView *dropZoneView = [[DropzoneView alloc]initWithFrame:dropZoneFrame];
+    return dropZoneView;
 }
 
 // Make multiple GestureRecognizers work
@@ -142,6 +157,13 @@
         }
         
         [self addSubview:entity];
+        
+        
+    }
+    
+    if(dropzoneView == nil) {
+        dropzoneView = [self initalizeDropzoneView];
+        [self addSubview: dropzoneView];
     }
 }
 
@@ -839,6 +861,9 @@
     if (entityToRemove) {
         [self.motionEntities removeObject:entityToRemove];
         [entityToRemove removeFromSuperview];
+        if(_onShapeDeleted) {
+            _onShapeDeleted(@{ @"shapeDetails": [Utility getEntityConfig:entityToRemove]});
+        }
         entityToRemove = nil;
         [self selectEntity:entityToRemove];
         [self onShapeSelectionChanged:nil];
@@ -849,7 +874,6 @@
 - (void)deleteEntityById:(NSString *)shapeId {
     MotionEntity *entityToRemove = nil;
     for (MotionEntity *entity in self.motionEntities) {
-        if (entity.entityId == shapeId) {
             entityToRemove = entity;
             break;
         }
@@ -941,6 +965,7 @@
    
 }
 
+
 - (void)handleMove:(UIPanGestureRecognizer *)sender {
     UIGestureRecognizerState state = [sender state];
     if (self.selectedEntity) {
@@ -952,11 +977,54 @@
             [sender setTranslation:CGPointZero inView:sender.view];
             [self setNeedsDisplayInRect:self.selectedEntity.bounds];
             if (state == UIGestureRecognizerStateEnded) {
-                    [self onShapeTransformationEnded: @"move" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity]}];
+                [self onShapeTransformationEnded: @"move" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity]}];
             }
+            [self checkToDelete:sender];
         }
     }
 }
+
+
+- (void) checkToDelete: (UIGestureRecognizer *) sender {
+    UIGestureRecognizerState state = [sender state];
+    
+    if(![[self subviews] containsObject: dropzoneView]) {
+        if(dropzoneView == nil) {
+            dropzoneView = [self initalizeDropzoneView];
+        }
+        [dropzoneView showView:YES];
+        [self addSubview: dropzoneView];
+    }
+    
+    // Calculate space for the DropZone
+    BOOL insideDropZone = CGRectContainsPoint(dropzoneView.frame, [sender locationInView: self]);
+    
+    switch (state) {
+        case UIGestureRecognizerStateBegan:
+            
+            break;
+        case UIGestureRecognizerStateChanged:
+            
+            if(insideDropZone) {
+                [dropzoneView toggleHover: true];
+            } else {
+                [dropzoneView toggleHover: false];
+            }
+            
+            break;
+        case UIGestureRecognizerStateEnded:
+            if (insideDropZone) {
+                [self releaseSelectedEntity];
+            }
+            // Hide Drop Zone
+            [dropzoneView removeFromSuperview];
+            break;
+        default:
+            [dropzoneView showView:NO];
+            break;
+    }
+}
+
 
 - (void)handleScale:(UIPinchGestureRecognizer *)sender {
     UIGestureRecognizerState state = [sender state];
