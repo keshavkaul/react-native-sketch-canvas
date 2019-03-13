@@ -22,11 +22,11 @@
     RNSketchData *_currentPath;
     
     CGSize _lastSize;
-
+    
     CGContextRef _drawingContext, _translucentDrawingContext;
     CGImageRef _frozenImage, _translucentFrozenImage;
     BOOL _needsFullRedraw;
-
+    
     UIImage *_backgroundImage;
     UIImage *_backgroundImageScaled;
     NSString *_backgroundImageContentMode;
@@ -43,7 +43,7 @@
         _eventDispatcher = eventDispatcher;
         _paths = [NSMutableArray new];
         _needsFullRedraw = YES;
-
+        
         self.backgroundColor = [UIColor clearColor];
         self.clearsContextBeforeDrawing = YES;
         
@@ -101,9 +101,9 @@
 
 - (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
-
+    
     CGRect bounds = self.bounds;
-
+    
     if (_needsFullRedraw) {
         [self setFrozenImageNeedsUpdate];
         CGContextClearRect(_drawingContext, bounds);
@@ -112,7 +112,7 @@
         }
         _needsFullRedraw = NO;
     }
-
+    
     if (!_frozenImage) {
         _frozenImage = CGBitmapContextCreateImage(_drawingContext);
     }
@@ -120,15 +120,15 @@
     if (!_translucentFrozenImage && _currentPath.isTranslucent) {
         _translucentFrozenImage = CGBitmapContextCreateImage(_translucentDrawingContext);
     }
-
+    
     if (_backgroundImage) {
         if (!_backgroundImageScaled) {
             _backgroundImageScaled = [self scaleImage:_backgroundImage toSize:bounds.size contentMode: _backgroundImageContentMode];
         }
-
+        
         [_backgroundImageScaled drawInRect:bounds];
     }
-
+    
     for (CanvasText *text in _arrSketchOnText) {
         [text.text drawInRect: text.drawRect withAttributes: text.attribute];
     }
@@ -136,7 +136,7 @@
     if (_frozenImage) {
         CGContextDrawImage(context, bounds, _frozenImage);
     }
-
+    
     if (_translucentFrozenImage && _currentPath.isTranslucent) {
         CGContextDrawImage(context, bounds, _translucentFrozenImage);
     }
@@ -169,7 +169,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-
+    
     if (!CGSizeEqualToSize(self.bounds.size, _lastSize)) {
         _lastSize = self.bounds.size;
         CGContextRelease(_drawingContext);
@@ -202,7 +202,7 @@
     _drawingContext = CGBitmapContextCreate(nil, size.width, size.height, 8, 0, colorSpace, kCGImageAlphaPremultipliedLast);
     _translucentDrawingContext = CGBitmapContextCreate(nil, size.width, size.height, 8, 0, colorSpace, kCGImageAlphaPremultipliedLast);
     CGColorSpaceRelease(colorSpace);
-
+    
     CGContextConcatCTM(_drawingContext, CGAffineTransformMakeScale(scale, scale));
     CGContextConcatCTM(_translucentDrawingContext, CGAffineTransformMakeScale(scale, scale));
 }
@@ -230,7 +230,7 @@
             _backgroundImageScaled = nil;
             _backgroundImageContentMode = mode;
             [self setNeedsDisplay];
-
+            
             return YES;
         }
     }
@@ -262,11 +262,11 @@
             }
             text.font = font;
             text.anchor = property[@"anchor"] == nil ?
-                CGPointMake(0, 0) :
-                CGPointMake([property[@"anchor"][@"x"] floatValue], [property[@"anchor"][@"y"] floatValue]);
+            CGPointMake(0, 0) :
+            CGPointMake([property[@"anchor"][@"x"] floatValue], [property[@"anchor"][@"y"] floatValue]);
             text.position = property[@"position"] == nil ?
-                CGPointMake(0, 0) :
-                CGPointMake([property[@"position"][@"x"] floatValue], [property[@"position"][@"y"] floatValue]);
+            CGPointMake(0, 0) :
+            CGPointMake([property[@"position"][@"x"] floatValue], [property[@"position"][@"y"] floatValue]);
             long color = property[@"fontColor"] == nil ? 0xFF000000 : [property[@"fontColor"] longValue];
             UIColor *fontColor =
             [UIColor colorWithRed:(CGFloat)((color & 0x00FF0000) >> 16) / 0xFF
@@ -302,10 +302,10 @@
 }
 
 - (void)newPath:(int) pathId strokeColor:(UIColor*) strokeColor strokeWidth:(int) strokeWidth {
-//    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
-//        self.entityStrokeColor = strokeColor;
-//    }
-//    self.entityStrokeWidth = strokeWidth;
+    //    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
+    //        self.entityStrokeColor = strokeColor;
+    //    }
+    //    self.entityStrokeWidth = strokeWidth;
     
     _currentPath = [[RNSketchData alloc]
                     initWithId: pathId
@@ -315,9 +315,9 @@
 }
 
 - (void) addPath:(int) pathId strokeColor:(UIColor*) strokeColor strokeWidth:(int) strokeWidth points:(NSArray*) points {
-//    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
-//        self.entityStrokeColor = strokeColor;
-//    }
+    //    if (CGColorGetComponents(strokeColor.CGColor)[3] != 0.0) {
+    //        self.entityStrokeColor = strokeColor;
+    //    }
     
     bool exist = false;
     for(int i=0; i<_paths.count; i++) {
@@ -508,7 +508,7 @@
             NSURL *fileURL = [[tempDir URLByAppendingPathComponent: filename] URLByAppendingPathExtension: type];
             NSData *imageData = [self getImageData:img type:type];
             [imageData writeToURL:fileURL atomically:YES];
-
+            
             if (_onChange) {
                 _onChange(@{ @"success": @YES, @"path": [fileURL path]});
             }
@@ -530,7 +530,7 @@
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef context = CGBitmapContextCreate(NULL, size.width, size.height, 8, 0, colorSpace, kCGImageAlphaPremultipliedLast);
     CGContextClearRect(context, CGRectMake(0, 0, size.width, size.height));
-
+    
     CGRect targetRect = [Utility fillImageWithSize:originalImage.size toSize:size contentMode:mode];
     CGContextDrawImage(context, targetRect, originalImage.CGImage);
     
@@ -874,6 +874,7 @@
 - (void)deleteEntityById:(NSString *)shapeId {
     MotionEntity *entityToRemove = nil;
     for (MotionEntity *entity in self.motionEntities) {
+        if (entity.entityId == shapeId) {
             entityToRemove = entity;
             break;
         }
@@ -886,7 +887,6 @@
         [self onShapeSelectionChanged:nil];
         
     }
-    
 }
 
 - (void) deleteAllEntities {
@@ -951,7 +951,7 @@
                 [self setNeedsDisplayInRect:self.selectedEntity.bounds];
             }
             [self onSelectedShapeConfigChange:@"rotate" actionObject: @{ @"value": [NSNumber numberWithFloat:sender.rotation] }];
-             _rotationChange = _rotationChange + sender.rotation;
+            _rotationChange = _rotationChange + sender.rotation;
             [sender setRotation:0.0];
             break;
         case UIGestureRecognizerStateEnded:
@@ -962,7 +962,7 @@
         default:
             break;
     }
-   
+    
 }
 
 
@@ -1095,7 +1095,7 @@
         case 1: // change in scale
             _onShapeConfigChange(@{ @"transform": @"scale", @"action": actionObject});
             break;
-           
+            
         case 2: // change in rotation
             _onShapeConfigChange(@{ @"transform": @"rotate", @"action": actionObject});
             break;
