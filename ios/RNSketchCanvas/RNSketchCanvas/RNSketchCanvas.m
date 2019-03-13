@@ -976,9 +976,6 @@
             [self onSelectedShapeConfigChange:@"move" actionObject: @{ @"value": points}];
             [sender setTranslation:CGPointZero inView:sender.view];
             [self setNeedsDisplayInRect:self.selectedEntity.bounds];
-            if (state == UIGestureRecognizerStateEnded) {
-                [self onShapeTransformationEnded: @"move" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity]}];
-            }
             [self checkToDelete:sender];
         }
     }
@@ -1015,6 +1012,8 @@
         case UIGestureRecognizerStateEnded:
             if (insideDropZone) {
                 [self releaseSelectedEntity];
+            } else {
+                [self onShapeTransformationEnded: @"move" actionObject: @{@"value": [Utility getEntityConfig:self.selectedEntity]}];
             }
             // Hide Drop Zone
             [dropzoneView removeFromSuperview];
